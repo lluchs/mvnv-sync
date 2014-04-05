@@ -6,7 +6,7 @@ import (
 	"labix.org/v2/mgo"
 	"labix.org/v2/mgo/bson"
 
-	"./mvnv"
+	"mvnv-sync/mvnv"
 )
 
 func main() {

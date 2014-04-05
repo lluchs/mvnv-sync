@@ -8,19 +8,38 @@ import (
 	"mvnv-sync/mvnv"
 )
 
+func usage() {
+	fmt.Fprintln(os.Stderr, `Usage: mvnv-sync <cmd>
+
+Possible commands:
+   backup    Print a full database backup to stdout
+`)
+}
+
 func main() {
 	defer mvnv.CloseDB()
 
-	scores, err := mvnv.GetScores()
-	if err != nil {
-		panic(err)
+	if len(os.Args) != 2 {
+		usage()
+		return
 	}
 
-	fmt.Printf("%d scores found.\n", len(scores))
+	switch cmd := os.Args[1]; cmd {
+	case "backup":
+		backup, err := mvnv.GetBackup()
+		if err != nil {
+			panic(err)
+		}
 
-	jsonString, err := json.Marshal(scores)
-	if err != nil {
-		fmt.Println("Marshal error: ", err)
+		fmt.Fprintf(os.Stderr, "%d scores and %d racks found.\n", len(backup.Scores), len(backup.Racks))
+
+		jsonString, err := json.Marshal(backup)
+		if err != nil {
+			fmt.Println("Marshal error: ", err)
+		}
+		os.Stdout.Write(jsonString)
+	default:
+		fmt.Fprintln(os.Stderr, "Invalid command ", cmd)
+		usage()
 	}
-	os.Stdout.Write(jsonString)
 }

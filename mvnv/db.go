@@ -26,5 +26,7 @@ func db() *mgo.Database {
 func CloseDB() {
 	if session != nil {
 		session.Close()
+		session = nil
+		database = nil
 	}
 }

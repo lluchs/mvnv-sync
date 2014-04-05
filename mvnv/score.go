@@ -5,12 +5,12 @@ import (
 )
 
 type Score struct {
-	Id int
-	Title string
-	Composer string
-	Publisher string
-	Tags []string
-	Year int
+	Id int `json:"id"`
+	Title string `json:"title"`
+	Composer string `json:"composer,omitempty"`
+	Publisher string `json:"publisher,omitempty"`
+	Tags []string `json:"tags"`
+	Year int `json:"year,omitempty"`
 }
 
 // Returns a slice of all scores in the database.

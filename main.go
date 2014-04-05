@@ -2,27 +2,25 @@ package main
 
 import (
 	"fmt"
-
-	"labix.org/v2/mgo"
-	"labix.org/v2/mgo/bson"
+	"os"
+	"encoding/json"
 
 	"mvnv-sync/mvnv"
 )
 
 func main() {
-	session, err := mgo.Dial("localhost")
-	if err != nil {
-			panic(err)
-	}
-	defer session.Close()
+	defer mvnv.CloseDB()
 
-	scores := session.DB("mvnv").C("scores")
-
-	score := mvnv.Score{}
-	err = scores.Find(bson.M{"id": 124}).One(&score)
+	scores, err := mvnv.GetScores()
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Printf("Score: %v\n", score)
+	fmt.Printf("%d scores found.\n", len(scores))
+
+	jsonString, err := json.Marshal(scores)
+	if err != nil {
+		fmt.Println("Marshal error: ", err)
+	}
+	os.Stdout.Write(jsonString)
 }
